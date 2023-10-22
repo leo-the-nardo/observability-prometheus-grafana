@@ -19,11 +19,11 @@ services:
     ports:
       - 3000:3000
     restart: unless-stopped
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=grafana
-#    volumes:
-#      - ./grafana:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
 #volumes:
 #  prom_data:
   cadvisor:
@@ -43,3 +43,11 @@ services:
     container_name: redis
     ports:
       - 6379:6379
+
+  app:
+    build: .
+    container_name: app
+    volumes:
+      - .:/go/src
+    ports:
+      - 8181:8181
