@@ -17,4 +17,9 @@ scrape_configs:
     scheme: http
     static_configs:
       - targets: ['localhost:9090'] #Prometheus monitoring itself
+
+  - job_name: cadvisor
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['cadvisor:8080']
 #    honor_timestamps: true
