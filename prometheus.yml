@@ -23,3 +23,7 @@ scrape_configs:
     static_configs:
       - targets: ['cadvisor:8080']
 #    honor_timestamps: true
+  - job_name: app
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'app:8181' ]

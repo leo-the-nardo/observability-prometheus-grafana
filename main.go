@@ -40,11 +40,21 @@ func main() {
 		res.Write([]byte("Hello World"))
 	})
 
-	durationHandler := promhttp.InstrumentHandlerDuration(
+	contactHandler := http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		time.Sleep(time.Duration(rand.Intn(18000)) * time.Millisecond)
+		res.WriteHeader(http.StatusOK)
+		res.Write([]byte("contact"))
+	})
+	homeOnMetricsHandler := promhttp.InstrumentHandlerDuration(
 		httpDuration.MustCurryWith(prometheus.Labels{"handler": "home"}),
 		promhttp.InstrumentHandlerCounter(httpRequestsTotal, homeHandler))
+	contactOnMetricsHandler := promhttp.InstrumentHandlerDuration(
+		httpDuration.MustCurryWith(prometheus.Labels{"handler": "contact"}),
+		promhttp.InstrumentHandlerCounter(httpRequestsTotal, contactHandler))
 
-	http.Handle("/", durationHandler)
+	http.Handle("/", homeOnMetricsHandler)
+	http.Handle("/contact", contactOnMetricsHandler)
+
 	http.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	log.Fatal(http.ListenAndServe(":8181", nil))
 }
